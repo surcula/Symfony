@@ -4,11 +4,18 @@ namespace App\Entity;
 
 use App\Repository\UsersRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=UsersRepository::class)
+ * @ORM\Table(name="Users")
+ * @UniqueEntity(fields={"username"},message="le nom d'utilisateur doit être unique")
+ * @method string getUserIdentifier()
  */
-class Users
+class Users implements UserInterface, PasswordAuthenticatedUserInterface
 {
     /**
      * @ORM\Id
@@ -24,11 +31,20 @@ class Users
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="veuillez encoder un mot de passe",groups="registration")
+     * @Assert\Regex(pattern="/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$^+=!*()@%&]).{8}$/",
+     *     htmlPattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$^+=!*()@%&]).{8}$",
+     *     message="le password doit contenir au moins 1 majuscule, 1 caractère spécial",
+     *     groups="registration"
+     * )
+     * @Assert\Length(max=8,min=8,exactMessage="la longeur doit être de 8 caractères",
+     *     groups="registration")
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Email(message="l'email doit être valide")
      */
     private $mail;
 
@@ -36,6 +52,12 @@ class Users
      * @ORM\ManyToOne(targetEntity=Roles::class, inversedBy="users")
      */
     private $id_role;
+
+    /**
+     * @Assert\EqualTo(propertyPath="password",
+     *     message="les mots de passe ne sont pas identiques",
+     *     groups="registration")
+     */
     private $confirm_password;
 
     /**
@@ -78,7 +100,7 @@ class Users
 
     public function setPassword(string $password): self
     {
-        $this->password = $password;
+        $this->password = password_hash($password,PASSWORD_BCRYPT);
 
         return $this;
     }
@@ -105,5 +127,25 @@ class Users
         $this->id_role = $id_role;
 
         return $this;
+    }
+
+    public function getRoles(): ?array
+    {
+        return array('Role_'.strtoupper($this->id_role()));
+    }
+
+    public function getSalt()
+    {
+        // TODO: Implement getSalt() method.
+    }
+
+    public function eraseCredentials()
+    {
+        // TODO: Implement eraseCredentials() method.
+    }
+
+    public function __call(string $name, array $arguments)
+    {
+        // TODO: Implement @method string getUserIdentifier()
     }
 }

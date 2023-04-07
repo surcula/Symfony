@@ -3,19 +3,22 @@
     <script src="{{ asset( 'Javascript/Listener.js') }}"></script>
     <link rel="stylesheet" href="{{ asset('CSS/css.css') }}">
     <h1> {{ title }}</h1>
-    {% if errorLogin is defined %}
-        <div class="toast" style="position: absolute; top: 5rem; right: 1rem;" role="alert" aria-live="assertive" data-delay="4000" aria-atomic="true" >
-            <div class="toast-header">
-                <strong class="mr-auto">Error Login</strong>
-                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+    {% for type,messages in app.flashes %}
+        {% for message in messages %}
+            <h3>{{ message }}</h3>
+            <div class="toast ml-auto" style="position: absolute; top: 5rem; right: 1rem;" role="alert" aria-live="assertive" data-delay="4000" aria-atomic="true">
+                <div class="toast-header">
+                    <strong class="mr-auto">Error</strong>
+                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="toast-body">
+                    <h2 class="text-danger"> {{ message }}</h2>
+                </div>
             </div>
-            <div class="toast-body">
-                <h2 class="text-danger"> {{ errorLogin }}</h2>
-            </div>
-        </div>
-    {% endif %}
+        {% endfor %}
+    {% endfor %}
     {% if age is defined %}
         {% if age < 18 %}
             <p>tu es mineur</p>
@@ -23,6 +26,4 @@
             <p>tu es majeur</p>
         {% endif %}
     {% endif %}
-
-
 {% endblock %}

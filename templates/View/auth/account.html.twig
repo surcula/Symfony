@@ -1,22 +1,27 @@
 {% extends 'base.html.twig' %}
 {% form_theme formAccount 'bootstrap_4_layout.html.twig' %}
 {% block body %}
+    {% if not editMode %}
+        {% block javascripts %}
+            <script src="{{ asset('javascript/listener.js') }}"></script>
+        {% endblock %}
+    {% endif %}
     <h1 class="py-lg-5">{% if editMode %} Mon Compte {% else %} Créer un Compte {% endif %} </h1>
     <div class="col-md-5">
         {{ form_start(formAccount,{ 'attr':{'id':'userForm'} }) }}
-        {{ form_row(formAccount.username,{ 'attr':{'placeholder':'login', 'readOnly':editMode}}) }}
+        {{ form_row(formAccount.username,{ 'attr':{'placeholder':'login', 'readOnly':editMode, 'class':(formAccount.username.vars.valid ? '' : 'is-invalid')}}) }}
+        <div id="nomError" hidden="true" class="alert alert-danger col-md-12 col-md-offset-3" >Le login existe déjà</div>
         {% if not editMode %}
-            {{ form_row(formAccount.password) }}
-            <div class="form-group">
-                <label for="confirmPassword"> Confirm password</label>
-                <input type="password" class="form-control" id="confirmPassword">
-            </div>
-        {% endif %}
+            {{ form_row(formAccount.password, { 'attr':{'class':(formAccount.password.vars.valid | length ? '' : 'is-invalid') }}) }}
+            {{ form_row(formAccount.confirm_password,{ 'attr':{'class':(formAccount.confirm_password.vars.valid | length ? '' : 'is-invalid') }}) }}
+            <div id="passwordError" hidden="true" class="alert alert-danger col-md-12 col-md-offset-3" >Les passwords doivent être identiques </div>
+            <div id="passwordMatches" hidden="true" class="alert alert-danger col-md-12 col-md-offset-3" > 1 majuscule, 1 caractère spécial et 8 caractères </div>
 
+        {% endif %}
 
         {{ form_row(formAccount.mail,{ 'attr':{'placeholder':'xxxx@mail.com'}}) }}
 
-        {% if editMode and idRole > 1 %}
+        {% if editMode and role is defined and role == "ROLE_USER" %}
             {{ form_row(formAccount.idRole, {'attr':{'disabled':'disabled'}}) }}
         {% else %}
             {{ form_row(formAccount.idRole) }}

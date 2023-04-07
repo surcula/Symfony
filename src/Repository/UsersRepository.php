@@ -39,16 +39,38 @@ class UsersRepository extends ServiceEntityRepository
         }
     }
 
-    public function findOneByLowerUsername($userName){
+    /**
+     * @param $userName
+     * @return Users|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findOneByLowerUsername($userName):?Users{
 
-        return $this->createQueryBuilder('User')
-            ->andWhere('User.username = :val')
-            ->setParameter('val',$userName)
+        return $this->createQueryBuilder('U')
+            ->andWhere('lower(U.username) = lower(:username)')
+            ->setParameter('username',$userName)
             ->getQuery()
             ->getOneOrNullResult()
             ;
 
     }
+
+    /**
+     * @param $userName
+     * @return Users|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findByUsername($userName):?Users{
+
+        return $this->createQueryBuilder('U')
+            ->andWhere('lower(U.username) = lower(:username)')
+            ->setParameter('username',$userName)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+
+    }
+
 
 //    /**
 //     * @return Users[] Returns an array of Users objects

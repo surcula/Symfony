@@ -1,72 +1,73 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-
         ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-        <script src="https://kit.fontawesome.com/ee896b6519.js" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://kit.fontawesome.com/ee896b6519.js" crossorigin="anonymous"></script>
 
-        <link rel="stylesheet" href="https://bootswatch.com/4/flatly/bootstrap.min.css">
+    <link rel="stylesheet" href="https://bootswatch.com/4/flatly/bootstrap.min.css">
 
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
-        {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
-        {% endblock %}
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+    {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}
+    {% endblock %}
 
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
-        {% endblock %}
-    </head>
-    <body>
-    {% set filter = app.session.get('filter') %}
-    {% if filter != null %}
-        {% set idRole = filter['idRole'] %}
-        {% set idUser = filter['idUser'] %}
-        {% set username = filter['username'] %}
-    {% endif %}
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">Ecommerce</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarColor01">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/">Home
-                            <span class="sr-only">(current)</span>
-                        </a>
-                    </li>
-                    {# <li class="nav-item">#}
-                    {# <a class="nav-link" href="{{ path("test",{"name":"xavier"})
+    {% block javascripts %}
+        {{ encore_entry_script_tags('app') }}
+    {% endblock %}
+</head>
+<body>
+{#    {% set filter = app.session.get('filter') %}#}
+{#    {% if filter != null %}#}
+{#        {% set idRole = filter['idRole'] %}#}
+{#        {% set idUser = filter['idUser'] %}#}
+{#        {% set username = filter['username'] %}#}
+{#    {% endif %}#}
+{% if app.user != null %}
+    {% set role = app.user.roles[0] %}
+    {% set idUser = app.user.id %}
+    {% set username = app.user.username %}
+{% endif %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">Ecommerce</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarColor01">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/">Home
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                {# <li class="nav-item">#}
+                {# <a class="nav-link" href="{{ path("test",{"name":"xavier"})
 }}">Créer un article</a>#}
-                    {# </li>#}
+                {# </li>#}
 
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" data-toggle="dropdown"
-                           href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-                        <div class="dropdown-menu">
-                            {% if idRole is defined and idRole == 1 %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown"
+                       href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+                    <div class="dropdown-menu">
+                        {% if role is defined and role =="ROLE_ADMIN" %}
                             <a class="dropdown-item" href="{{ path('account') }}">Créer un utilisateur</a>
-                            {% endif %}
-                            <a class="dropdown-item" href="#">Action</a>
-                            <a class="dropdown-item" href="#">Another action</a>
-                            <a class="dropdown-item" href="#">Something else here</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Separated link</a>
-                        </div>
-                    </li>
-                </ul>
-
-            </div>
-
-
-
-            {% if username is not defined %}
+                        {% endif %}
+                        <a class="dropdown-item" href="#">Action</a>
+                        <a class="dropdown-item" href="#">Another action</a>
+                        <a class="dropdown-item" href="#">Something else here</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Separated link</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        {% if username is not defined %}
             <ul class="nav navbar-nav flex-row justify-content-between ml-auto">
                 <li class="dropdown order-1">
                     <button type="button" id="dropdownMenu1" data-toggle="dropdown" class="btn btn-outline-secondary dropdown-toggle">Login <span class="caret"></span></button>
@@ -74,7 +75,7 @@
                         <li class="px-3 py-2">
                             <form class="form" role="form"  method='post' action="{{ path('login') }}">
                                 <div class="form-group">
-                                    <input id="username" name="username" placeholder="UserName" class="form-control form-control-sm" type="text" required="">
+                                    <input id="username" name="username" placeholder="Username" class="form-control form-control-sm" type="text" required="">
                                 </div>
                                 <div class="form-group">
                                     <input id="password" name="password" placeholder="Password" class="form-control form-control-sm" type="password" required="">
@@ -85,30 +86,33 @@
                                 <div class="form-group text-center">
                                     <small><a href="#" data-toggle="modal" data-target="#modalPassword">Forgot password?</a></small>
                                 </div>
+                                <div class="form-group">
+                                    <input name="csrf_token" type="hidden" value="{{ csrf_token('login_form') }}">
+                                </div>
                             </form>
                         </li>
                     </ul>
                 </li>
             </ul>
 
-            {% else %}
-                <ul class="nav navbar-nav flex-row justify-content-between ml-auto">
-                    <li class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Bienvenue {{ username }}</a>
-                        <div class="dropdown-menu">
-                            <a href="{{ path('account-edit',{'id':idUser}) }}" class="dropdown-item">Mon Compte</a>
-                        </div>
-                    </li>
-                    <li class="nav-item nav-link">
-                        <i data-toggle="tooltip" data-placement="buttom" title="logout" onclick="location.href='{{ path("logout") }}'" class="fas fa-sign-out-alt"></i>
-                    </li>
-                </ul>
+        {% else %}
+            <ul class="nav navbar-nav flex-row justify-content-between ml-auto">
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Bienvenue {{ username }}</a>
+                    <div class="dropdown-menu">
+                        <a href="{{ path('account-edit',{'id':idUser}) }}" class="dropdown-item">Mon Compte</a>
+                    </div>
+                </li>
+                <li class="nav-item nav-link">
+                    <i data-toggle="tooltip" data-placement="buttom" title="logout" onclick="location.href='{{ path("logout") }}'" class="fas fa-sign-out-alt"></i>
+                </li>
+            </ul>
 
-            {% endif %}
-        </div>
-    </nav>
-        {% block body %}
+        {% endif %}
+    </div>
+</nav>
+{% block body %}
 
-        {% endblock %}
-    </body>
+{% endblock %}
+</body>
 </html>
